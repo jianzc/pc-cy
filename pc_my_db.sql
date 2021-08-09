@@ -118,3 +118,70 @@ CREATE TABLE cy_user_open (
   unionid varchar(100) DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE cy_activity (
+  activity_id bigint(20) NOT NULL AUTO_INCREMENT COMMENT '活动ID',
+  name varchar(200) NOT NULL COMMENT '活动名称',
+  start_time datetime DEFAULT NULL COMMENT '开始时间',
+  end_time datetime DEFAULT NULL COMMENT '结束时间',
+  status tinyint(4) NOT NULL COMMENT '活动状态 0：关闭 1：开启 -1：删除',
+  contact_number varchar(20) NOT NULL COMMENT '联系电话',
+  apply_url varchar(500) NOT NULL COMMENT '报名链接',
+  apply_title varchar(255) NOT NULL COMMENT '报名文案',
+  apply_button_url varchar(255) NOT NULL COMMENT '报名按钮图片链接',
+  apply_logo_url varchar(255) NOT NULL COMMENT '报名logo链接',
+  funds int(11) NOT NULL DEFAULT '0' COMMENT '活动经费（单位：分）',
+  packet_num int(11) NOT NULL DEFAULT '0' COMMENT '红包数量',
+  packet_type tinyint(4) NOT NULL COMMENT '红包类型 1：固定金额 2：随机金额 3：指定红包金额及数量',
+  packet_amount int(11) DEFAULT '0' COMMENT '红包金额（单位：分）',
+  min_packet_amount int(11) DEFAULT '0' COMMENT '最小红包金额（单位：分）',
+  max_packet_amount int(11) DEFAULT '0' COMMENT '最大红包金额（单位：分）',
+  remain_funds int(11) DEFAULT '0' COMMENT '剩余经费（单位：分）',
+  remain_funds_alloc_type tinyint(4) DEFAULT '0' COMMENT '剩余经费分配类型 1：平均分配 2：随机分配',
+  remain_packet_num int(11) DEFAULT NULL COMMENT '剩余红包数量',
+  is_set_stay_time tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否设置停留时间 1：是 0：否',
+  stay_time int(11) NOT NULL DEFAULT '0' COMMENT '停留时间（秒）',
+  is_set_join_area tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否设置参与地区 1：是 0：否',
+  join_area varchar(255) NOT NULL COMMENT '参与地区',
+  is_need_follow tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否需要关注 1：是 0：否',
+  create_at datetime DEFAULT NULL COMMENT '创建时间',
+  create_by varchar(30) NOT NULL COMMENT '创建人',
+  update_at datetime DEFAULT NULL COMMENT '更新时间',
+  update_by varchar(30) NOT NULL COMMENT '更新人',
+  PRIMARY KEY (activity_id)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COMMENT='活动表';
+
+CREATE TABLE cy_activity_detail (
+  activity_id bigint(20) NOT NULL COMMENT '活动ID',
+  share_title varchar(255) NOT NULL DEFAULT '' COMMENT '分享标题',
+  share_desc varchar(255) NOT NULL DEFAULT '' COMMENT '分享摘要',
+  share_pic_url varchar(255) NOT NULL DEFAULT '' COMMENT '分享图片链接',
+  source tinyint(4) NOT NULL DEFAULT '0' COMMENT '内容来源 1：原创 2：转载',
+  source_info varchar(255) NOT NULL DEFAULT '' COMMENT '内容来源信息',
+  content text NOT NULL COMMENT '活动内容',
+  PRIMARY KEY (activity_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='活动详情表';
+
+CREATE TABLE cy_activity_openid (
+  activity_id int(11) NOT NULL COMMENT '活动ID',
+  openid char(28) NOT NULL COMMENT '微信openid',
+  PRIMARY KEY (activity_id,openid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='活动已授权微信用户';
+
+CREATE TABLE cy_activity_packet (
+  activity_packet_id bigint(20) NOT NULL AUTO_INCREMENT COMMENT '活动红包ID',
+  activity_id bigint(20) NOT NULL COMMENT '活动ID',
+  packet_amount int(11) NOT NULL DEFAULT '0' COMMENT '红包金额（单位：分）',
+  status tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态 0：待领取 1：已领取',
+  openid char(28) DEFAULT NULL COMMENT '微信openid',
+  draw_at datetime DEFAULT NULL COMMENT '领取时间',
+  PRIMARY KEY (activity_packet_id)
+) ENGINE=InnoDB AUTO_INCREMENT=361 DEFAULT CHARSET=utf8mb4 COMMENT='活动红包表';
+
+CREATE TABLE cy_activity_packet_config (
+  activity_packet_config_id bigint(20) NOT NULL AUTO_INCREMENT COMMENT '活动红包配置ID',
+  activity_id bigint(20) NOT NULL COMMENT '活动ID',
+  packet_amount int(11) NOT NULL COMMENT '红包金额',
+  packet_num int(11) NOT NULL COMMENT '红包数量',
+  PRIMARY KEY (activity_packet_config_id) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COMMENT='活动红包配置表';
